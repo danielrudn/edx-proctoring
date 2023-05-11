@@ -1642,11 +1642,14 @@ def update_attempt_status(attempt_id, to_status,
 
         # call service to get course name.
         credit_service = get_runtime_service('credit')
-        credit_state = credit_service.get_credit_state(
-            exam_attempt_obj.user_id,
-            exam_attempt_obj.proctored_exam.course_id,
-            return_course_info=True
-        )
+        if credit_service:
+            credit_state = credit_service.get_credit_state(
+                exam_attempt_obj.user_id,
+                exam_attempt_obj.proctored_exam.course_id,
+                return_course_info=True
+            )
+        else:
+            credit_state = None
 
         default_name = _('your course')
         if credit_state:
@@ -2075,6 +2078,8 @@ def check_prerequisites(exam, user_id):
     Check if prerequisites are satisfied for user to take the exam
     """
     credit_service = get_runtime_service('credit')
+    if not credit_service:
+        return exam
     credit_state = credit_service.get_credit_state(user_id, exam['course_id'])
     if not credit_state:
         return exam
