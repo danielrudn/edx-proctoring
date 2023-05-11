@@ -1510,14 +1510,14 @@ def update_attempt_status(attempt_id, to_status,
                     'status': credit_requirement_status,
                 }
             )
-
-            credit_service.set_credit_requirement_status(
-                user_id=exam_attempt_obj.user_id,
-                course_key_or_id=exam['course_id'],
-                req_namespace='proctored_exam',
-                req_name=exam_attempt_obj.proctored_exam.content_id,
-                status=credit_requirement_status
-            )
+            if credit_service:
+                credit_service.set_credit_requirement_status(
+                    user_id=exam_attempt_obj.user_id,
+                    course_key_or_id=exam['course_id'],
+                    req_namespace='proctored_exam',
+                    req_name=exam_attempt_obj.proctored_exam.content_id,
+                    status=credit_requirement_status
+                )
 
         if cascade_effects and ProctoredExamStudentAttemptStatus.is_a_cascadable_failure(to_status):
             # if user declines attempt, make sure we clear out the external_id and
